@@ -1,4 +1,4 @@
-package com.example.es_kt_velapp
+package com.example.appname
 
 import android.content.Context
 import android.net.ConnectivityManager
