@@ -1,41 +1,96 @@
-package com.example.appname
+package com.app.name
 
 import android.app.AlertDialog
 import android.content.Context
-import android.graphics.Color
 import android.view.View
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
+import com.app.name.R
+import java.lang.Double.parseDouble
 import java.util.*
 
 class UtilitiesKt {
-    val ERROR_SYNTAX = Color.RED
-    val SUCCESS_SYNTAX = Color.GREEN
-    val WHITE_SYNTAX = Color.WHITE
-    val BLACK_SYNTAX = Color.BLACK
-    val INFO_SYNTAX = Color.BLUE
-    val HIDDEN_SYNTAX = Color.LTGRAY
+    val success_syntax = R.color.success
+    val warning_syntax = R.color.warning
+    val error_syntax = R.color.error
+    val white_syntax = R.color.white
+    val black_syntax = R.color.black2
+    val info_syntax = R.color.info
+    val hidden_syntax = R.color.success
 
-    val FONT_SIZE_S = 12f
-    val FONT_SIZE_SM = 14f
-    val FONT_SIZE_M = 16f
-    val FONT_SIZE_ML = 20f
-    val FONT_SIZE_L = 22f
-    val FONT_SIZE_XL = 26f
+    val font_size_s = 12f
+    val font_size_sm = 14f
+    val font_size_m = 16f
+    val font_size_ml = 20f
+    val font_size_l = 22f
+    val font_size_xl = 26f
 
-    fun Snack(view: View, text: String = "Snackbar!", color: Int = Color.LTGRAY, textColor: Int = Color.BLUE, textSize: Float = 20f) {
+    fun Snack(view: View, text: String = "Snackbar!", color: Int = this.hidden_syntax, textColor: Int = this.info_syntax, textSize: Float = this.font_size_ml) {
         val snackbar = Snackbar.make(view, text,
             Snackbar.LENGTH_LONG).setAction("Action", null)
+
         val snackbarView = snackbar.view
         snackbarView.setBackgroundColor(color)
+
         val snackbarText = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text) as TextView
+
         snackbarText.setTextColor(textColor)
         snackbarText.textSize = textSize
         snackbar.show()
     }
 
+    fun ErrorSnack(view: View, text: String = "Snackbar!", textSize: Float = this.font_size_sm) {
+        this.Snack(
+            view,
+            text,
+            UtilitiesKt().error_syntax,
+            UtilitiesKt().white_syntax,
+            textSize
+        )
+    }
+
+    fun NormalSnack(view: View, text: String = "Snackbar!", textSize: Float = this.font_size_sm) {
+        this.Snack(
+            view,
+            text,
+            UtilitiesKt().hidden_syntax,
+            UtilitiesKt().white_syntax,
+            textSize
+        )
+    }
+
+    fun InfoSnack(view: View, text: String = "Snackbar!", textSize: Float = this.font_size_sm) {
+        this.Snack(
+            view,
+            text,
+            UtilitiesKt().info_syntax,
+            UtilitiesKt().white_syntax,
+            textSize
+        )
+    }
+
+    fun WarningSnack(view: View, text: String = "Snackbar!", textSize: Float = this.font_size_sm) {
+        this.Snack(
+            view,
+            text,
+            UtilitiesKt().warning_syntax,
+            UtilitiesKt().white_syntax,
+            textSize
+        )
+    }
+
+    fun SuccessSnack(view: View, text: String = "Snackbar!", textSize: Float = this.font_size_sm) {
+        this.Snack(
+            view,
+            text,
+            UtilitiesKt().success_syntax,
+            UtilitiesKt().white_syntax,
+            textSize
+        )
+    }
+
     fun random(range: IntRange): Int {
-        return Random().nextInt(range.last - range.start)
+        return Random().nextInt(range.last - range.first)
     }
 
     fun Alert(context: Context, title: String, message: String) {
@@ -46,4 +101,28 @@ class UtilitiesKt {
         alert.setTitle(title)
         alert.show()
     }
+}
+
+fun Array<Any>.inArray(item: Any): Boolean {
+    for(x in this) {
+        if(x == item) {
+            return true
+        }
+    }
+
+    return false
+}
+
+fun String.isNum(): Boolean {
+    var numeric = true;
+
+    try {
+        parseDouble(this)
+    } catch(e: NumberFormatException) {
+        numeric = false;
+    } catch(e: Exception) {
+        numeric = false;
+    }
+
+    return numeric;
 }
