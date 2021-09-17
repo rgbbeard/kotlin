@@ -1,84 +1,107 @@
-package com.example.appname
+package com.app.name
 
 import android.annotation.SuppressLint
+import android.content.Context
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 
-class FileSystemKt {
+class FileSystemKt(context: Context) {
     @SuppressLint("SdCardPath")
     val storagePath = "/data/data/"
-    val appStoragePath = storagePath + "com.example.appname/"
-    val loginDataPath = appStoragePath + "login_data/"
-    val scannerDataPath = appStoragePath + "files_data/"
+    final var appStoragePath: String
+    final var loginDataPath: String
+    final var scannerDataPath: String
 
-    fun DirIsEmpty(dirName: String, excludeRoot: Boolean = false): Boolean {
+    //For unknown reasons context.packageName (alias of getPackageName function) throws an exception
+    init {
+        try {
+            this.appStoragePath = this.storagePath + context.packageName + "/"
+        } catch(e: Exception) {
+            this.appStoragePath = this.storagePath + "com.app.name/"
+        }
+
+        this.loginDataPath = appStoragePath + "login_data/"
+        this.scannerDataPath = appStoragePath + "files_data/"
+    }
+
+    fun dirIsEmpty(dirName: String, excludeRoot: Boolean = false): Boolean {
         var filesCount = 0
         var fnDirName: String = dirName
-        if(excludeRoot == false) {
+
+        if(!excludeRoot) {
             (appStoragePath + dirName).also { fnDirName = it }
         }
 
         try {
             File(fnDirName).walk().filter {
                 it.isFile
-            }.forEach {
+            }.forEach { _ ->
                 filesCount += 1
             }
         } catch(e: IOException) {
             println("\n\n----\n\nFn DirIsEmpty:\n\n----\n\n" + e.message)
         }
+
         return filesCount > 0
     }
 
-    fun FilesInDir(dirName: String, excludeRoot: Boolean = false): Int {
+    fun filesInDir(dirName: String, excludeRoot: Boolean = false): Int {
         var filesCount = 0
         var fnDirName: String = dirName
-        if(excludeRoot == false) {
+
+        if(!excludeRoot) {
             (appStoragePath + dirName).also { fnDirName = it }
         }
 
         try {
             File(fnDirName).walk().filter {
                 it.isFile
-            }.forEach {
+            }.forEach { _ ->
                 filesCount += 1
             }
         } catch(e: IOException) {
             println("\n\n----\n\nFn DirIsEmpty:\n\n----\n\n" + e.message)
         }
+
         return filesCount
     }
 
-    fun MakeDir(dirName: String, excludeRoot: Boolean = false): Boolean {
+    fun makeDir(dirName: String, excludeRoot: Boolean = false): Boolean {
         var fnDirName: String = dirName
-        if(excludeRoot == false) {
+
+        if(!excludeRoot) {
             (appStoragePath + dirName).also { fnDirName = it }
         }
 
         try {
             val newDir = File(fnDirName)
             val createDir = newDir.mkdir()
+
             if(createDir) {
                 return true
             }
         } catch(e: IOException) {
             println("\n\n----\n\nFn MakeDir:\n\n----\n\n" + e.message)
         }
+
         return false
     }
 
-    fun MakeFile(fileName: String, fileContent: Any, excludeRoot: Boolean = false): Boolean {
+    fun makeFile(fileName: String, fileContent: Any, excludeRoot: Boolean = false): Boolean {
         var fnFileName: String = fileName
-        if(excludeRoot == false) {
+
+        if(!excludeRoot) {
             (appStoragePath + fileName).also { fnFileName = it }
         }
 
         try {
-            val newFile = File(fnFileName).writeText(fileContent.toString())
-            if(this.FileEsists(fnFileName, excludeRoot)) {
+            File(fnFileName).writeText(fileContent.toString())
+
+            if(this.fileEsists(fnFileName, excludeRoot)) {
                 return true
             }
+
             return false
         } catch(e: IOException) {
             println("\n\n----\n\nFn MakeFile:\n\n----\n\n" + e.message)
@@ -86,9 +109,9 @@ class FileSystemKt {
         return false
     }
 
-    fun ReadFile(fileName: String, excludeRoot: Boolean = false): String {
+    fun readFile(fileName: String, excludeRoot: Boolean = false): String {
         var fnFileName: String = fileName
-        if(excludeRoot == false) {
+        if(!excludeRoot) {
             (appStoragePath + fileName).also { fnFileName = it }
         }
 
@@ -96,6 +119,7 @@ class FileSystemKt {
             val result: String
             val lines: List<String> = File(fnFileName).readLines()
             result = lines.joinToString()
+
             return result
         } catch(e: IOException) {
             println("\n\n----\n\nFn MakeFile IOException:\n\n----\n\n" + e.message)
@@ -105,23 +129,23 @@ class FileSystemKt {
         return ""
     }
 
-    fun DirExists(dirName: String, excludeRoot: Boolean = false): Boolean {
+    fun dirExists(dirName: String, excludeRoot: Boolean = false): Boolean {
         var fnDirName: String = dirName
-        if(excludeRoot == false) {
+
+        if(!excludeRoot) {
             (appStoragePath + dirName).also { fnDirName = it }
         }
 
-        val dirExists = File(fnDirName).exists()
-        return dirExists
+        return File(fnDirName).exists()
     }
 
-    fun FileEsists(fileName: String, excludeRoot: Boolean = false): Boolean {
+    fun fileEsists(fileName: String, excludeRoot: Boolean = false): Boolean {
         var fnFileName: String = fileName
-        if(excludeRoot == false) {
+
+        if(!excludeRoot) {
             (appStoragePath + fileName).also { fnFileName = it }
         }
 
-        val fileExists = File(fnFileName).exists()
-        return fileExists
+        return File(fnFileName).exists()
     }
 }
